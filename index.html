@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OrgGraph · Org chart inference</title>
+  <meta name="description" content="Inferred reporting lines for 520 companies, built from flat employee lists. Runs fully in the browser on a SQLite file.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="5" rx="1.2"/><rect x="2" y="16" width="6" height="5" rx="1.2"/><rect x="16" y="16" width="6" height="5" rx="1.2"/><path d="M12 7v4.5M5 16v-3.5h14V16"/></g></svg>
+      <span>OrgGraph</span>
+    </a>
+    <nav class="tabs" role="tablist">
+      <a href="#/" data-tab="companies" class="tab">Companies</a>
+      <a href="#/quality" data-tab="quality" class="tab">Model quality</a>
+      <a href="#/about" data-tab="about" class="tab">How it works</a>
+    </nav>
+    <div class="search-wrap">
+      <input id="globalSearch" type="search" placeholder="Search people, titles or companies…" autocomplete="off" aria-label="Search">
+      <div id="searchResults" class="search-results" hidden></div>
+    </div>
+    <button id="themeToggle" class="icon-btn" title="Toggle light / dark" aria-label="Toggle light or dark theme"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+  </header>
+
+  <div id="loader" class="loader">
+    <div class="loader-card">
+      <div class="loader-title">Loading the org database…</div>
+      <div class="bar"><div id="loaderBar"></div></div>
+      <div id="loaderText" class="muted small">Fetching data/orgchart.db</div>
+    </div>
+  </div>
+
+  <main id="app" hidden>
+    <!-- Companies view -->
+    <section id="view-companies" class="view">
+      <aside class="sidebar">
+        <div class="sidebar-filters">
+          <input id="companyFilter" type="search" placeholder="Filter companies" aria-label="Filter companies">
+          <div class="row">
+            <select id="industryFilter" aria-label="Industry"><option value="">All industries</option></select>
+            <select id="sortCompanies" aria-label="Sort">
+              <option value="name">A → Z</option>
+              <option value="coverage">Most resolved</option>
+              <option value="coverage_asc">Least resolved</option>
+              <option value="size">Largest</option>
+            </select>
+          </div>
+          <div id="companyCount" class="muted small"></div>
+        </div>
+        <ul id="companyList" class="company-list"></ul>
+      </aside>
+
+      <section class="content" id="companyContent">
+        <div class="empty-state">
+          <h2>Pick a company</h2>
+          <p class="muted">Every company started as a flat list of names and messy job titles. OrgGraph infers who reports to whom, with a confidence on every line, and leaves a manager empty when it can't be sure.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- Model quality -->
+    <section id="view-quality" class="view" hidden>
+      <div class="page" id="qualityContent"></div>
+    </section>
+
+    <!-- About -->
+    <section id="view-about" class="view" hidden>
+      <div class="page prose" id="aboutContent"></div>
+    </section>
+  </main>
+
+  <!-- Person drawer -->
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <button class="icon-btn drawer-close" id="drawerClose" aria-label="Close">✕</button>
+    <div id="drawerBody"></div>
+  </aside>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <script src="vendor/sql-wasm.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
